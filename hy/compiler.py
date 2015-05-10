@@ -1062,6 +1062,17 @@ class HyASTCompiler(object):
                           lineno=e.start_line,
                           col_offset=e.start_column)
 
+    @builds("nonlocal")
+    @checkargs(min=1)
+    def compile_nonlocal_expression(self, expr):
+        if not PY3:
+            raise HyCompileError(
+                    "nonlocal only supported in python 3")
+        e = expr.pop(0) # nonlocal
+        return ast.Nonlocal(names=[ast_str(n) for n in expr],
+                                  lineno=e.start_line,
+                                  col_offset=e.start_column)
+
     @builds("yield")
     @checkargs(max=1)
     def compile_yield_expression(self, expr):
